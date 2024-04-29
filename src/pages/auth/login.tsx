@@ -3,39 +3,31 @@ import { InferGetServerSidePropsType } from 'next';
 import Image from 'next/image';
 
 const login = ({
-  // ここで型を定義しています
   providers,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
-    <div className='flex flex-col'>
-      <div className='items-center'>
+    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
+      <div className='mb-8'>
         <Image
           src='/images/github-icon.png'
           alt='github-icon'
           width={150}
           height={150}
-          className='justify-center items-center'
         />
       </div>
       {providers &&
         Object.values(providers).map((provider) => {
           return (
-            <div key={provider.name}>
+            <div key={provider.name} className='mb-4'>
               <button
-                className='group relative inline-flex items-center justify-start overflow-hidden rounded bg-white px-6 py-3 font-medium transition-all hover:bg-white'
-                // このボタンを押すと GitHub による認証が行われます
-                // また、認証後のリダイレクト先をルートパスに設定しています
-                // リダイレクト先については後ほど変更します
+                className='px-6 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition-colors'
                 onClick={() =>
                   signIn(provider.id, {
                     callbackUrl: '/',
                   })
                 }
               >
-                <span className='absolute bottom-0 left-0 mb-9 ml-9 h-48 w-48 -translate-x-full translate-y-full rotate-[-40deg] rounded bg-slate-800 transition-all duration-500 ease-out group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0'></span>
-                <span className='relative w-full text-left text-black transition-colors duration-300 ease-in-out group-hover:text-white'>
-                  Sign in with {provider.name}
-                </span>
+                Sign in with {provider.name}
               </button>
             </div>
           );
@@ -47,8 +39,6 @@ const login = ({
 export default login;
 
 export const getServerSideProps = async () => {
-  // ここで、認証の方法を取得しています
-  // 今回は、GitHub による認証だけですが、複数の認証方法（Google・Twitterなど）を取得することが出来ます
   const providers = await getProviders();
   return {
     props: { providers },
